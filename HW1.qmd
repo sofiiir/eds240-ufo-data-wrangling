@@ -2,8 +2,9 @@
 title: "HW #1"
 subtitle: "Interpreting `{ggplot2}` code"
 description: "Assigned Wed 01/07/2026 | Due Wed 01/14/2026"
-author: "Your Name"
+author: "Sofia Rodas"
 toc: true
+code-line-numbers: true
 editor_options: 
   chunk_output_type: console
 ---
@@ -21,6 +22,7 @@ editor_options:
 #| eval: false
 #| echo: true
 
+# load in necessary libraries
 library(colorspace)
 library(geofacet) 
 library(ggtext) 
@@ -32,31 +34,37 @@ library(scales)
 library(showtext) 
 library(tidyverse) 
 
+# read in the data
 ufo_sightings <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-06-20/ufo_sightings.csv')
 places <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-06-20/places.csv')
 
+# assign the colors to variable names
 alien <- c("#101319", "#28ee85")
 bg <- alien[1]
 accent <- alien[2]
 
+# read in the ufo image 
 ufo_image <- magick::image_read(path = here::here("images", "ufo.png")) 
 
+# load in fonts from google
 sysfonts::font_add_google(name = "Orbitron", family = "orb")
 sysfonts::font_add_google(name = "Barlow", family = "bar")
 
+# load in fonts from fonts folder
 sysfonts::font_add(family = "fa-brands", regular = here::here("fonts", "Font Awesome 6 Brands-Regular-400.otf"))
 sysfonts::font_add(family = "fa-solid", regular = here::here("fonts", "Font Awesome 6 Free-Solid-900.otf"))
 
+# makes applying fonts to graphics easier
 showtext::showtext_auto(enable = TRUE)
 ```
 
 1. **What is the author defining in lines 15-17? Where else in the code do these defined variables show up? What advantage(s) is there to defining these values here, as variables, rather than defining the values directly throughout the script?**
 
-    - Answer here
+    - The author is defining the colors for the graphic. These colors show up again in the ggplot portions of the code. They are the arguments set equal to fill and color. These values are hex codes that are clunky to use over and over again. This would require constantly copying and pasting the hex codes or memorizing them. Since the hex codes appear abritrary to us as humans, it is safer to assign it to a variable that can be easily remembered and called.  
 
 2. **In your own words, explain what the function, `font_add_google()`, does. What's the difference between the two arguments, `name` and `family`?**
 
-    - Answer here
+    - `font_add_google()` references Google fonts and retrieves the specified font. The `name` argument is the specific name for the font in Google Fonts while the `family` refers to the family name in font.
 
 ## II. Data wrangling
 
@@ -66,19 +74,20 @@ showtext::showtext_auto(enable = TRUE)
 #| eval: false
 #| echo: true
 
+# create a df of the states in the us and their respective populations
 df_pop <- places |>
   filter(country_code == "US") |>
-  mutate(state = str_replace(string = state,
+  mutate(state = str_replace(string = state,  # standardize the state names
                              pattern = "Fl",
                              replacement = "FL")) |> 
   group_by(state) |>
-  summarise(pop = sum(population)) |>
+  summarise(pop = sum(population)) |> # add all of the pop for one state together
   ungroup()
 ```
 
 3. **Describe what this data frame contains.**
 
-    - Answer here
+    - The `df_pop` data frame contains a list of all of the states in the US and their cooresponding population. Note that there are 51 rows as the District of Columbia is included as a state in this data frame. 
 
 ### ii. Create `df_us`
 
@@ -86,14 +95,15 @@ df_pop <- places |>
 #| eval: false
 #| echo: true
 
+# create a df for each state in the us, their pop, ufo sightings per 10k and assign an opacity for the ufo sighting
 df_us <- ufo_sightings |>
   filter(country_code == "US") |>
   mutate(state = str_replace(string = state,
                              pattern = "Fl",
                              replacement = "FL")) |> 
   count(state) |>
-  left_join(df_pop, by = "state") |>
-  rename(num_obs = n) |> 
+  left_join(df_pop, by = "state") |> # add state pop data 
+  rename(num_obs = n) |>  
   mutate(
     num_obs_per10k = num_obs / pop * 10000,
     opacity_val = num_obs_per10k / max(num_obs_per10k)
@@ -102,11 +112,11 @@ df_us <- ufo_sightings |>
 
 4. **Describe what this data frame contains.**
 
-    - Answer here
+    - The `df_us` contains a list of all of the states in the US, the number of ufo observations for each state, the population of the state, the number of observations per ten thousand people in the population, and an opacity value. Again the District of Columbia is included accounting for the 51 states.
 
 5. **What does `opacity_val` represent, and why is it calculated?**
 
-    - Answer here
+    - The opacity values is  determined by the states number of observations per ten thousand people in the population and the maximum number of observations per ten thousand people in the population for any state. This opacity value is then used to make the visual depicting the "sightings per 10k population".
 
 ### iii. Create `df_shape`
 
@@ -114,12 +124,13 @@ df_us <- ufo_sightings |>
 #| eval: false
 #| echo: true
 
+# create a df showing the top 10 shapes in ufo sightings
 df_shape <- ufo_sightings |>
-  filter(!shape %in% c("unknown", "other")) |>
-  count(shape) |>
+  filter(!shape %in% c("unknown", "other")) |> # select defined shapes
+  count(shape) |> # count each shape value
   rename(total_sightings = n) |> 
-  arrange(desc(total_sightings)) |>
-  slice_head(n = 10) |>
+  arrange(desc(total_sightings)) |> # arrange in descending order
+  slice_head(n = 10) |> # select only top 10 sightings 
   mutate(
     shape = fct_reorder(.f = shape, 
                         .x = total_sightings), 
@@ -130,7 +141,7 @@ df_shape <- ufo_sightings |>
 
 6. **Describe what this data frame contains.**
 
-    - Answer here
+    - The `df_shape` shows the top 10 most common shape of the UFO sightings. The total sightings for each shape is included as is a calculate opacity value. 
 
 7. **What does `fct_reorder` do when it is applied to the `shape` variable? What would have happened if this step was not performed?**
 
@@ -138,7 +149,7 @@ df_shape <- ufo_sightings |>
 
 8. **What is the purpose of rescaling `opacity_val`? And why rescale from 0.3 to 1?**
 
-    - Answer here
+    - Creating the `opacity_val` with `rescale` adds a value between 0 and 1. By setting the `rescale` to 0.3 to 1 the opacity values are then changed to 0.3 to 1. An opacity of 0 would have made the value invisible in the visual. 
 
 ### iv. Create `df_day_hour`
 
@@ -166,11 +177,11 @@ df_day_hour <- ufo_sightings |>
 
 9. **Describe what this data frame contains.**
 
-    - Answer here
+    - The `df_day_hour` assigns a value from 1 to 7 for the day of the week with Sunday being assigned 1 and Saturday being assigned 7. The `wday` column includes an abbreviation og the weekday. The `hour` column has a numeric value of the hour in the day that the sighting took place. The `total_daily_obs` column is the number of sightings cooresponding with the respective day of the week and time of day. The `opacity_val` assigns an opacity value calculated by dividing the total daily observations and the maximum value of any total daily observation. Lastly, the column `hour_lab` is included as an hour label for the visual. 
 
 10. **What is the purpose of the last line inside the `case_when()` statement (`TRUE ~ paste0(hour - 12, "pm")`)?**
 
-    - Answer here
+    - The line `TRUE ~ paste0(hour - 12, "pm")` applies to any values that are greater than 12. When the value is greater than 12 the manipulation changes the value from a 24 hour scale to the more commonly used 12 hour time scale. 12 is subtracted from any number greater than 12 and "pm" is added as the label. 
 
 ## III. Prepare text elements
 
@@ -234,7 +245,7 @@ plot_shape <- ggplot(data = df_shape) +
 
 12. **Explain the values provided to the `x` aesthetic for both text geoms (`shape` & `total_sightings`).**
 
-    - Answer here
+    - The `x` value in the aesthetics is specifying the position of the text. 200 is the position given for all of the `shape` titles. The position of the value of the total sightings is determined by the number of total sightings minus 200, towards the end of the column representing the number of sightings. 
 
 ### ii. Build `plot_us` 
 
@@ -274,7 +285,7 @@ plot_us <-  ggplot(df_us) +
 
 13. **Consider the order of `geom_*()` layers in the the above plot (`plot_us`). Why did the author order the layers in this way?**
 
-    - Answer here
+    - The `geom_rect()` is the base layer so that the text that follows is visible above. The `geom_text()` has to be on the top in order to be visible. 
 
 ### iii. Build `plot_day`
 
@@ -306,13 +317,13 @@ plot_day <- ggplot(data = df_day_hour) +
   )
 ```
 
-14. **This plot includes one-letter labels for each day of the week. How is ths accomplished when week days are written using their three-letter abbreviations (e.g. `Mon`, `Tue`) in the `df_day_hour` data frame?**
+14. **This plot includes one-letter labels for each day of the week. How is this accomplished when week days are written using their three-letter abbreviations (e.g. `Mon`, `Tue`) in the `df_day_hour` data frame?**
 
-    - Answer here
+    - The code `str_sub(string = wday, start = 1, end = 1)` selects for only the first letter in the weekday. This text is added with `geom_text()` to the visual. 
 
 15. **What role do the `ylim()` and `xlim()` functions play in shaping a ggplot, and how do they change the visual layout of this particular plot? To better understand their effect, try rerunning the code with each of these lines commented out and observe how the plot’s spacing and composition change.**
 
-    - Answer here
+    - The `ylim()` and `xlim()` define the coordinate values of the graph where the visuals will be spaced. The `ylim()` creates the center circle void of the visual. The `xlim()` creates the spacing between the 11pm and 12am column. 
 
 ### iv. Build `quote*`s
 
@@ -373,7 +384,7 @@ quote3 <- ggplot() +
 
 16. **Why do you think the author chose to convert these text elements (and also in `plot_ufo`, below!) into ggplot objects (you may consider returning to this question after you've worked your way through all of the code)?**
 
-    - Answer here
+    - The author likely chose to convert the text into ggplot objects to streamline making the final visual. The different elements all being in the same format makes them work well together. 
 
 ### v. Build `plot_ufo`
 
@@ -428,7 +439,7 @@ plot_base <- ggplot() +
 
 17. **Why does the author render `plot.caption` using `ggtext::element_markdown()`, rather than `element_text()` (like he does for rendering `plot.title` and `text`)?**
 
-    - Answer here
+    - `element_markdown()` is used instead of `element_text()` for the caption as it creates a markdown element and a link can be added to the visual. `element_text()` creates a static visual and does not have the functionality of adding hyperlinks. 
 
 ## V. Assemble & save
 
@@ -459,11 +470,11 @@ ggsave(plot = plot_final,
 
 18. **Explain how `plot_final` is assembled. What do you think is the most challenging aspect of arranging all components into a single plot?**
 
-    - Answer here
+    - `plot_final` is assembled by calling all of the individually created aspect of the final visual and defining the spacing by adding argument values to the `left`, `right`, `top`, and `bottom` parameters. The most challenging aspect of arranging the plots is adequately defining the spacing so that items do not overlap and spacing is aesthetic. 
 
 19. **Can you think of one reason the author may have chosen to separate the construction of `plot_base` and `plot_final`?**
 
-    - Answer here
+    - Creating the base layer first allows for easier trouble shooting when spacing the plots and quotes. 
 
 ## Answer some final reflective questions 
 
@@ -483,16 +494,16 @@ ggsave(plot = plot_final,
 
 21. **Describe two elements of this piece that you find visually-pleasing / easy to understand / intuitive. Why?** 
 
-    - Answer here
+    - I find the use of opacity visually pleasing and easy to understand. It easily allows me to understand what values are the highest and which values are the lowest without having to read every single value. I also appreciate that the top sightings of UFOs are broken into three different categories: shape, state, and time. This allows us to understand the highest values of UFO sighting in each category. 
 
 22. **Describe two elements of this piece that you feel could be better presented in a different way. Why?** 
 
-    - Answer here
+    - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the day of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. This could be improved by even shifting the day of the week indicator to the right where the opacity of the green is much higher. 
     
 23. **Describe two new things that you learned by interpreting / annotating this code. These could be packages, functions, or even code organizational approaches that you hadn't previously known about or considered.**
 
-    - Answer here
+    - Again, I was most impressed by the use of opacity in the visualization. I had never considered defining opacity based on the values of a given variable in the data. I am excited to incorporate this technique into my future work. The code `geofacet::facet_geo(~state)` which arranges the geographic information maintaining some semblence of the geographic orientation is a cool visual package. It adds information to otherwise disjointed visuals.  
 
 24. **How, if at all, did you use AI tools to help you interpret this code? Describe your approach to using these tools for this assignment. In what ways was consulting the documentation more (or less) helpful than using AI?**
 
-    - Answer here
+    - I did not use AI when interpretting this code. I primarily used the documentation that is available when running `?function` into the console. When the documentation within R studio were not sufficient I explored online resources and occassionally stack overflow and posit. 
