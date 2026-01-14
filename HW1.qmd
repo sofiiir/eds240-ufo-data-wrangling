@@ -60,7 +60,7 @@ showtext::showtext_auto(enable = TRUE)
 
 1. **What is the author defining in lines 15-17? Where else in the code do these defined variables show up? What advantage(s) is there to defining these values here, as variables, rather than defining the values directly throughout the script?**
 
-    - The author is defining the colors for the graphic. These colors show up again in the ggplot portions of the code. They are the arguments set equal to fill and color. These values are hex codes that are clunky to use over and over again. This would require constantly copying and pasting the hex codes or memorizing them. Since the hex codes appear abritrary to us as humans, it is safer to assign it to a variable that can be easily remembered and called.  
+    - The author is defining the colors for the graphic. These colors show up again in the `ggplot` portions of the code. They are the arguments set equal to fill and color. These values are hex codes that are clunky to use over and over again. This would require constantly copying and pasting the hex codes or memorizing them. Since the hex codes appear abritrary to us as humans, it is safer to assign it to a variable that can be easily remembered and called and avoids bugs due to hex code issues.  
 
 2. **In your own words, explain what the function, `font_add_google()`, does. What's the difference between the two arguments, `name` and `family`?**
 
@@ -81,7 +81,7 @@ df_pop <- places |>
                              pattern = "Fl",
                              replacement = "FL")) |> 
   group_by(state) |>
-  summarise(pop = sum(population)) |> # add all of the pop for one state together
+  summarise(pop = sum(population)) |> # add pop for each state together
   ungroup()
 ```
 
@@ -112,11 +112,11 @@ df_us <- ufo_sightings |>
 
 4. **Describe what this data frame contains.**
 
-    - The `df_us` contains a list of all of the states in the US, the number of ufo observations for each state, the population of the state, the number of observations per ten thousand people in the population, and an opacity value. Again the District of Columbia is included accounting for the 51 states.
+    - The `df_us` contains a list of all of the states in the US, the number of ufo observations for each state, the population of the state, the number of observations per ten thousand people in the population for each state, and an opacity value calculated based on the number of ufo observations per 10k population. Again the District of Columbia is included accounting for the 51 states.
 
 5. **What does `opacity_val` represent, and why is it calculated?**
 
-    - The opacity values is  determined by the states number of observations per ten thousand people in the population and the maximum number of observations per ten thousand people in the population for any state. This opacity value is then used to make the visual depicting the "sightings per 10k population".
+    - The opacity values is determined by the states number of observations per ten thousand people in the population for a given state divided by the maximum number of observations per ten thousand people in the population for any state. This opacity value is then used to make the visual depicting the "sightings per 10k population".
 
 ### iii. Create `df_shape`
 
@@ -141,7 +141,7 @@ df_shape <- ufo_sightings |>
 
 6. **Describe what this data frame contains.**
 
-    - The `df_shape` shows the top 10 most common shape of the UFO sightings. The total sightings for each shape is included as is a calculate opacity value. 
+    - The `df_shape` shows the top 10 most common shapes of the UFO sightings. The total sightings for each shape is included as is a calculated opacity value. 
 
 7. **What does `fct_reorder` do when it is applied to the `shape` variable? What would have happened if this step was not performed?**
 
