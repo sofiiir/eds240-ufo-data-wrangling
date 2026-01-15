@@ -132,8 +132,8 @@ df_shape <- ufo_sightings |>
   arrange(desc(total_sightings)) |> # arrange in descending order
   slice_head(n = 10) |> # select only top 10 sightings 
   mutate(
-    shape = fct_reorder(.f = shape, 
-                        .x = total_sightings), 
+     shape = fct_reorder(.f = shape, 
+                         .x = total_sightings), 
     opacity_val = scales::rescale(x = total_sightings, 
                                   to = c(0.3, 1))
     )
@@ -145,7 +145,7 @@ df_shape <- ufo_sightings |>
 
 7. **What does `fct_reorder` do when it is applied to the `shape` variable? What would have happened if this step was not performed?**
 
-    - Answer here
+    - `fct_reorder`orders the data frame in the specified order of `shape`.  If this step were not performed the order would be in alphabetical order. 
 
 8. **What is the purpose of rescaling `opacity_val`? And why rescale from 0.3 to 1?**
 
