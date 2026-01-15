@@ -1,5 +1,5 @@
 # Homework #1 (Interpreting `{ggplot2}` code)
-Author: Sofia Rodas
+Author: Sofia Rodas  
 Date: January 14, 2026
 
 ## About
