@@ -149,7 +149,7 @@ df_shape <- ufo_sightings |>
 
 8. **What is the purpose of rescaling `opacity_val`? And why rescale from 0.3 to 1?**
 
-    - Creating the `opacity_val` with `rescale` sets the value to a number between 0.3 and 1 since this is the argument given to `to`. Without the rescale argument the opacity values would be between 0 and 1. An opacity vale of 0 would have make the value invisible in the visual. 
+    - Creating the `opacity_val` with `rescale` sets the value to a number between 0.3 and 1 since this is the argument given to `to`. Without the rescale argument the opacity values would be between 0 and 1. An opacity vale of 0 would have made the value invisible in the visual. 
 
 ### iv. Create `df_day_hour`
 
@@ -177,7 +177,7 @@ df_day_hour <- ufo_sightings |>
 
 9. **Describe what this data frame contains.**
 
-    - The `df_day_hour` assigns a value from 1 to 7 for the day of the week with Sunday being assigned 1 and Saturday being assigned 7. All the days in between are assigned 2 through 6 in order. The `wday` column includes an abbreviation og the weekday. The `hour` column has a numeric value of the hour in the day that the sighting took place. The `total_daily_obs` column is the number of sightings cooresponding with the respective day of the week and time of day. The `opacity_val` assigns an opacity value calculated by dividing that specific day's total daily observations and the maximum value of any day's total daily observation. Lastly, the column `hour_lab` is included as an hour label for the visual. 
+    - The `df_day_hour` assigns a value from 1 to 7 for the day of the week with Sunday being assigned 1 and Saturday being assigned 7. All the days in between are assigned 2 through 6 in order. The `wday` column includes an abbreviation of the weekday. The `hour` column has a numeric value of the hour in the day that the sighting took place. The `total_daily_obs` column is the number of sightings cooresponding with the respective day of the week and time of day. The `opacity_val` assigns an opacity value calculated by dividing that specific day's total daily observations and the maximum value of any day's total daily observation. Lastly, the column `hour_lab` is included as an hour label for the visual. 
 
 10. **What is the purpose of the last line inside the `case_when()` statement (`TRUE ~ paste0(hour - 12, "pm")`)?**
 
@@ -203,7 +203,7 @@ caption <- glue("{original}{space}{dan_github}
 
 11. **In your own words, what is the difference between `paste0()` and `glue()`? Why did the author use `paste0` to construct `quotes` and `glue` to construct the other text elements?**
 
-    - `paste0()` removes spaces from strings when outputting text. `glue` maintains the spacing that is included with the exception of removing any leading or trailing spaces. The increased functionality of `glue()` is that you can call variables within quotations marks in curly brackets. This is arguably easier to code since quotion marks can be difficult to keep track of especially when there are multiple quotation marks in just one function. Some argue reading the syntax of `glue()` is also more intuitive. 
+    - `paste0()` uses text exactly as it is typed and variables cannot be inside of quoations to be called. The increased functionality of `glue()` is that you can call variables within quotations marks in curly brackets. This is arguably easier to code since quotation marks can be difficult to keep track of especially when there are multiple quotation marks in just one function. Some argue reading the syntax of `glue()` is also more intuitive when reading through code. `paste0()` is used for quotes since no variables are called and the exact text is used in the visual. `glue()` is used in constructing the other elements so it is easier to use variables in creating text for the visual. 
 
 ## IV. Build plots
 
@@ -486,7 +486,7 @@ ggsave(plot = plot_final,
     
     b. **What task(s) do you think the author wanted to enable or message(s) he wanted to convey with these visualizations (see lecture 2.1, slide 16 for examples)? Be sure to note at least one task / message for each of the three data viz.**
     
-        - The first visual is conveying the most commonly seen shapes of UFO sightings. The second visual is conveying the state with the most sightings per 10k people in the state's population. The last visual shows must clearly that the UFO sightings are occurig most often between 1 am and 5 am and the day with the most UFO sightings it Sunday.
+        - The first visual is conveying the most commonly seen shapes of UFO sightings. The second visual is conveying the state with the most sightings per 10k people in the state's population. The last visual shows most clearly that the UFO sightings are occurring most often between 1 am and 5 am and the day with the most UFO sightings is Sunday.
     
     c. **Name at least one caveat to the "hierarchy of perceptual tasks" that the author employed to achieve a goal(s) you noted in question b?**
     
@@ -500,7 +500,7 @@ ggsave(plot = plot_final,
 
 22. **Describe two elements of this piece that you feel could be better presented in a different way. Why?** 
 
-    - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the first letter of the days of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. Additionally, there are two S's which makes it hard to determine which day s which easily.
+    - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the first letter of the days of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. Additionally, there are two S's which makes it hard to determine which day is which easily.
     -  I do like the opacity change however when the opacity is extremely low some of the text is difficult to read. You have to strain your eyes slightly to make out the silhouttes of the letters and numbers. One way to change this is to set the base opacity slightly higher.
     
 23. **Describe two new things that you learned by interpreting / annotating this code. These could be packages, functions, or even code organizational approaches that you hadn't previously known about or considered.**
