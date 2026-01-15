@@ -496,18 +496,18 @@ ggsave(plot = plot_final,
 
     - I find the use of opacity visually pleasing and easy to understand. It easily allows me to understand what values are the highest and which values are the lowest without having to read every single number. 
     
-    Secondly, I appreciate that the top sightings of UFOs are broken into three different categories: shape, state, and time. This allows us to understand the highest values of UFO sighting in each category. 
+    -   Secondly, I appreciate that the top sightings of UFOs are broken into three different categories: shape, state, and time. This allows us to understand the highest values of UFO sighting in each category. 
 
 22. **Describe two elements of this piece that you feel could be better presented in a different way. Why?** 
 
     - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the first letter of the days of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. Additionally, there are two S's which makes it hard to determine which day s which easily.
-    I do like the opacity change however when the opacity is extremely low some of the text is difficult to read. You have to strain your eyes slightly to make out the silhouttes of the letters and numbers. One way to change this is to set the base opacity slightly higher.
+    -  I do like the opacity change however when the opacity is extremely low some of the text is difficult to read. You have to strain your eyes slightly to make out the silhouttes of the letters and numbers. One way to change this is to set the base opacity slightly higher.
     
 23. **Describe two new things that you learned by interpreting / annotating this code. These could be packages, functions, or even code organizational approaches that you hadn't previously known about or considered.**
 
     - Again, I was most impressed by the use of opacity in the visualization. I had never considered defining opacity based on the values of a given variable in the data. I am excited to incorporate this technique into my future work. 
     
-    The code `geofacet::facet_geo(~state)` which arranges the geographic information maintaining some semblence of the geographic orientation is a cool visual package. It adds information to otherwise disjointed visuals.  
+    -  The code `geofacet::facet_geo(~state)` which arranges the geographic information maintaining some semblence of the geographic orientation is a cool visual package. It adds information to otherwise disjointed visuals.  
 
 24. **How, if at all, did you use AI tools to help you interpret this code? Describe your approach to using these tools for this assignment. In what ways was consulting the documentation more (or less) helpful than using AI?**
 
