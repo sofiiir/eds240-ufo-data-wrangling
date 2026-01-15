@@ -145,11 +145,11 @@ df_shape <- ufo_sightings |>
 
 7. **What does `fct_reorder` do when it is applied to the `shape` variable? What would have happened if this step was not performed?**
 
-    - `fct_reorder`orders the data frame in the specified order of `shape`.  If this step were not performed the order would be in alphabetical order. 
+    - `fct_reorder`orders the data frame in the specified order of those shapes that were seen the most amount of times. If this step were not performed the order would be in alphabetical order. 
 
 8. **What is the purpose of rescaling `opacity_val`? And why rescale from 0.3 to 1?**
 
-    - Creating the `opacity_val` with `rescale` adds a value between 0 and 1. By setting the `rescale` to 0.3 to 1 the opacity values are then changed to 0.3 to 1. An opacity of 0 would have made the value invisible in the visual. 
+    - Creating the `opacity_val` with `rescale` sets the value to a number between 0.3 and 1 since this is the argument given to `to`. Without the rescale argument the opacity values would be between 0 and 1. An opacity vale of 0 would have make the value invisible in the visual. 
 
 ### iv. Create `df_day_hour`
 
@@ -177,7 +177,7 @@ df_day_hour <- ufo_sightings |>
 
 9. **Describe what this data frame contains.**
 
-    - The `df_day_hour` assigns a value from 1 to 7 for the day of the week with Sunday being assigned 1 and Saturday being assigned 7. The `wday` column includes an abbreviation og the weekday. The `hour` column has a numeric value of the hour in the day that the sighting took place. The `total_daily_obs` column is the number of sightings cooresponding with the respective day of the week and time of day. The `opacity_val` assigns an opacity value calculated by dividing the total daily observations and the maximum value of any total daily observation. Lastly, the column `hour_lab` is included as an hour label for the visual. 
+    - The `df_day_hour` assigns a value from 1 to 7 for the day of the week with Sunday being assigned 1 and Saturday being assigned 7. All the days in between are assigned 2 through 6 in order. The `wday` column includes an abbreviation og the weekday. The `hour` column has a numeric value of the hour in the day that the sighting took place. The `total_daily_obs` column is the number of sightings cooresponding with the respective day of the week and time of day. The `opacity_val` assigns an opacity value calculated by dividing that specific day's total daily observations and the maximum value of any day's total daily observation. Lastly, the column `hour_lab` is included as an hour label for the visual. 
 
 10. **What is the purpose of the last line inside the `case_when()` statement (`TRUE ~ paste0(hour - 12, "pm")`)?**
 
@@ -203,7 +203,7 @@ caption <- glue("{original}{space}{dan_github}
 
 11. **In your own words, what is the difference between `paste0()` and `glue()`? Why did the author use `paste0` to construct `quotes` and `glue` to construct the other text elements?**
 
-    - Answer here
+    - `paste0()` removes spaces from strings when outputting text. `glue` maintains the spacing that is included with the exception of removing any leading or trailing spaces. The increased functionality of `glue()` is that you can call variables within quotations marks in curly brackets. This is arguably easier to code since quotion marks can be difficult to keep track of especially when there are multiple quotation marks in just one function. Some argue reading the syntax of `glue()` is also more intuitive. 
 
 ## IV. Build plots
 
@@ -245,7 +245,7 @@ plot_shape <- ggplot(data = df_shape) +
 
 12. **Explain the values provided to the `x` aesthetic for both text geoms (`shape` & `total_sightings`).**
 
-    - The `x` value in the aesthetics is specifying the position of the text. 200 is the position given for all of the `shape` titles. The position of the value of the total sightings is determined by the number of total sightings minus 200, towards the end of the column representing the number of sightings. 
+    - The `x` value in the aesthetics is specifying the position of the text. 200 is the position given for all of the `shape` titles. The position of the value of the total sightings is determined by the number of total sightings minus 200, which places the values towards the end of the column representing the number of sightings. 
 
 ### ii. Build `plot_us` 
 
@@ -285,7 +285,7 @@ plot_us <-  ggplot(df_us) +
 
 13. **Consider the order of `geom_*()` layers in the the above plot (`plot_us`). Why did the author order the layers in this way?**
 
-    - The `geom_rect()` is the base layer so that the text that follows is visible above. The `geom_text()` has to be on the top in order to be visible. 
+    - The `geom_rect()` is the base layer so that the text that follows is visible above. The `geom_text()` has to be on the top in order to be visible since the filled in color would block the view of the text and values. 
 
 ### iii. Build `plot_day`
 
@@ -319,7 +319,7 @@ plot_day <- ggplot(data = df_day_hour) +
 
 14. **This plot includes one-letter labels for each day of the week. How is this accomplished when week days are written using their three-letter abbreviations (e.g. `Mon`, `Tue`) in the `df_day_hour` data frame?**
 
-    - The code `str_sub(string = wday, start = 1, end = 1)` selects for only the first letter in the weekday. This text is added with `geom_text()` to the visual. 
+    - The code `str_sub(string = wday, start = 1, end = 1)` selects for only the first letter in the weekday. This text is added with `geom_text()` to the visual providing the one-letter labels for each day of the week. 
 
 15. **What role do the `ylim()` and `xlim()` functions play in shaping a ggplot, and how do they change the visual layout of this particular plot? To better understand their effect, try rerunning the code with each of these lines commented out and observe how the plot’s spacing and composition change.**
 
@@ -384,7 +384,7 @@ quote3 <- ggplot() +
 
 16. **Why do you think the author chose to convert these text elements (and also in `plot_ufo`, below!) into ggplot objects (you may consider returning to this question after you've worked your way through all of the code)?**
 
-    - The author likely chose to convert the text into ggplot objects to streamline making the final visual. The different elements all being in the same format makes them work well together. 
+    - The author likely chose to convert the text into `ggplot` objects to streamline making the final visual. The different elements all being in the same format makes them work well together and work with the same packages. 
 
 ### v. Build `plot_ufo`
 
@@ -439,7 +439,7 @@ plot_base <- ggplot() +
 
 17. **Why does the author render `plot.caption` using `ggtext::element_markdown()`, rather than `element_text()` (like he does for rendering `plot.title` and `text`)?**
 
-    - `element_markdown()` is used instead of `element_text()` for the caption as it creates a markdown element and a link can be added to the visual. `element_text()` creates a static visual and does not have the functionality of adding hyperlinks. 
+    - `element_markdown()` is used instead of `element_text()` for the caption as it creates a markdown element and a link can be added to the visual. `element_text()` creates a static visual and does not have the functionality of adding hyperlinks. This is an amazing way to create visuals with links back to your GitHub.
 
 ## V. Assemble & save
 
@@ -482,27 +482,32 @@ ggsave(plot = plot_final,
 
     a. **What "perceptual tasks" (from Cleveland & McGill's heirarchy) must the viewer perform to extract information from these visualizations?**
         
-        - Answer here
+        - The first visual, starting from the top, requires viewers to analyze position along common scales with the added possibility of analyzing shading and saturation. The second visual relies most on the viewer interpreting shading and saturation but the values can be read as well. The third visual also relies heavily on shading and saturation and slightly relies on an interpretation of area if we are trying to determine which day had the most sightings.
     
     b. **What task(s) do you think the author wanted to enable or message(s) he wanted to convey with these visualizations (see lecture 2.1, slide 16 for examples)? Be sure to note at least one task / message for each of the three data viz.**
     
-        - Answer here
+        - The first visual is conveying the most commonly seen shapes of UFO sightings. The second visual is conveying the state with the most sightings per 10k people in the state's population. The last visual shows must clearly that the UFO sightings are occurig most often between 1 am and 5 am and the day with the most UFO sightings it Sunday.
     
     c. **Name at least one caveat to the "hierarchy of perceptual tasks" that the author employed to achieve a goal(s) you noted in question b?**
     
-        - Answer here
+        - The use of shading and saturation are really effective in this visual. They clearly show which shape is the most common, which state had the most UFO sightings per 10k people in the population, and which hours of the day have the most UFO sightings. 
 
 21. **Describe two elements of this piece that you find visually-pleasing / easy to understand / intuitive. Why?** 
 
-    - I find the use of opacity visually pleasing and easy to understand. It easily allows me to understand what values are the highest and which values are the lowest without having to read every single value. I also appreciate that the top sightings of UFOs are broken into three different categories: shape, state, and time. This allows us to understand the highest values of UFO sighting in each category. 
+    - I find the use of opacity visually pleasing and easy to understand. It easily allows me to understand what values are the highest and which values are the lowest without having to read every single number. 
+    
+    Secondly, I appreciate that the top sightings of UFOs are broken into three different categories: shape, state, and time. This allows us to understand the highest values of UFO sighting in each category. 
 
 22. **Describe two elements of this piece that you feel could be better presented in a different way. Why?** 
 
-    - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the day of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. This could be improved by even shifting the day of the week indicator to the right where the opacity of the green is much higher. 
+    - Though the circular visual representing UFO sighting based on time is visually pleasing it is not super intuitive to understand. Before recreating this visual myself, I did not notice that the first letter of the days of the week was included. Since the letter is black in a low opacity feature it is difficult to easily make out what it says. Additionally, there are two S's which makes it hard to determine which day s which easily.
+    I do like the opacity change however when the opacity is extremely low some of the text is difficult to read. You have to strain your eyes slightly to make out the silhouttes of the letters and numbers. One way to change this is to set the base opacity slightly higher.
     
 23. **Describe two new things that you learned by interpreting / annotating this code. These could be packages, functions, or even code organizational approaches that you hadn't previously known about or considered.**
 
-    - Again, I was most impressed by the use of opacity in the visualization. I had never considered defining opacity based on the values of a given variable in the data. I am excited to incorporate this technique into my future work. The code `geofacet::facet_geo(~state)` which arranges the geographic information maintaining some semblence of the geographic orientation is a cool visual package. It adds information to otherwise disjointed visuals.  
+    - Again, I was most impressed by the use of opacity in the visualization. I had never considered defining opacity based on the values of a given variable in the data. I am excited to incorporate this technique into my future work. 
+    
+    The code `geofacet::facet_geo(~state)` which arranges the geographic information maintaining some semblence of the geographic orientation is a cool visual package. It adds information to otherwise disjointed visuals.  
 
 24. **How, if at all, did you use AI tools to help you interpret this code? Describe your approach to using these tools for this assignment. In what ways was consulting the documentation more (or less) helpful than using AI?**
 
